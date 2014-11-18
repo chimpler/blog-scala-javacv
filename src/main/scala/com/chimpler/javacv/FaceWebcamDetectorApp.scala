@@ -32,12 +32,10 @@ object FaceWebcamDetectorApp extends App {
     val rightEyeXml = FaceWebcamDetectorApp.getClass.getClassLoader.getResource("haarcascade_mcs_righteye_alt.xml").getPath
     val rightEyeCascade = new CascadeClassifier(rightEyeXml)
 
-    def detect(greyMat: Mat): mutable.Buffer[Face] = {
-      val faces = mutable.Buffer.empty[Face]
-
+    def detect(greyMat: Mat): Seq[Face] = {
       val faceRects = new Rect()
       faceCascade.detectMultiScale(greyMat, faceRects)
-      for(i <- 0 until faceRects.limit()) {
+      for(i <- 0 until faceRects.limit()) yield {
         val faceRect = faceRects.position(i)
 
         // the left eye should be in the top-left quarter of the face area
@@ -49,10 +47,8 @@ object FaceWebcamDetectorApp extends App {
         val rightFaceMat = new Mat(greyMat, new Rect(faceRect.x + faceRect.width() / 2, faceRect.y, faceRect.width() / 2, faceRect.height() / 2))
         val rightEyeRect = new Rect()
         rightEyeCascade.detectMultiScale(rightFaceMat, rightEyeRect)
-
-        faces += Face(i, cloneRect(faceRect), cloneRect(leftEyeRect), cloneRect(rightEyeRect))
+        Face(i, cloneRect(faceRect), cloneRect(leftEyeRect), cloneRect(rightEyeRect))
       }
-      faces
     }
   }
 
@@ -78,7 +74,7 @@ object FaceWebcamDetectorApp extends App {
 
   val mat = new Mat(640, 480, CV_8UC3)
   val greyMat = new Mat(640, 480, CV_8U)
-  var faces = mutable.Buffer.empty[Face]
+  var faces: Seq[Face] = Nil
   while (true) {
     val img = grabber.grab()
     cvFlip(img, img, 1)

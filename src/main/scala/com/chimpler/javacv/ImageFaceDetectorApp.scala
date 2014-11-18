@@ -21,12 +21,12 @@ object ImageFaceDetectorApp extends App {
   // convert image to greyscale
   val greyMat = new Mat()
   opencv_imgproc.cvtColor(mat, greyMat, opencv_imgproc.CV_BGR2GRAY, 1)
-  ImageIO.write(greyMat.getBufferedImage, "jpg", new File(s"output_grey.jpg"))
+  ImageIO.write(greyMat.getBufferedImage, "jpg", new File("output_grey.jpg"))
 
   // equalize histogram
   val equalizedMat = new Mat()
   opencv_imgproc.equalizeHist(greyMat, equalizedMat)
-  ImageIO.write(equalizedMat.getBufferedImage, "jpg", new File(s"output_equalized.jpg"))
+  ImageIO.write(equalizedMat.getBufferedImage, "jpg", new File("output_equalized.jpg"))
 
   val faceXml = FaceWebcamDetectorApp.getClass.getClassLoader.getResource("haarcascade_frontalface_alt.xml").getPath
   val faceCascade = new CascadeClassifier(faceXml)
@@ -43,5 +43,5 @@ object ImageFaceDetectorApp extends App {
     graphics.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18))
     graphics.drawString(s"Face $i", faceRect.x, faceRect.y - 20)
   }
-  ImageIO.write(image, "jpg", new File(s"output_faces.jpg"))
+  ImageIO.write(image, "jpg", new File("output_faces.jpg"))
 }
