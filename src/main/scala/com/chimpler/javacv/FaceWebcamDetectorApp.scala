@@ -13,6 +13,7 @@ import scala.collection.mutable
  */
 object FaceWebcamDetectorApp extends App {
 
+  // holder for a single detected face: contains face rectangle and the two eye rectangles inside
   case class Face(id: Int, faceRect: Rect, leftEyeRect: Rect, rightEyeRect: Rect)
 
   // we need to clone the rect because openCV is recycling rectangles created by the detectMultiScale method
@@ -21,6 +22,7 @@ object FaceWebcamDetectorApp extends App {
   }
 
   class FaceDetector() {
+    // read the haar classifier xml files for face, left eye and right eye
     val faceXml = FaceWebcamDetectorApp.getClass.getClassLoader.getResource("haarcascade_frontalface_alt.xml").getPath
     val faceCascade = new CascadeClassifier(faceXml)
 
@@ -90,6 +92,7 @@ object FaceWebcamDetectorApp extends App {
       lastRecognitionTime = System.currentTimeMillis()
     }
 
+    // draw the face rectangles with the eyes and caption
     for(f <- faces) {
       // draw the face rectangle
       cvRectangle(img,
